@@ -1,4 +1,4 @@
-links
+notes
 docker
-src/*
 Dockerfile
+target/*
