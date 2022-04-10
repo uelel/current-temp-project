@@ -1,6 +1,7 @@
 package pageObject;
 
 import pageObject.BasePage;
+import defs.PropertiesHandler;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -16,13 +17,13 @@ public class HomePage extends BasePage {
   WebDriverWait wait;
 
   @FindBy(how = How.CSS, using = "#temperature")
-  private WebElement tempCont;
+  public WebElement tempCont;
 
   @FindBy(how = How.CSS, using = "a[href='/moisturizer']")
-  private WebElement moistButton;
+  public WebElement moistButton;
 
   @FindBy(how = How.CSS, using = "a[href='/sunscreen']") 
-  private WebElement sunButton;
+  public WebElement sunButton;
 
   public HomePage(WebDriver driver) {
     super(driver);
@@ -49,42 +50,11 @@ public class HomePage extends BasePage {
   }
 
   /**
-  * Load homepage repeatedly until displayed temperature 
-  * is lower that 19 degrees
-  */
-  public void loadPageWithTempLower19() {
-    Integer temp;
-    driver.get("https://weathershopper.pythonanywhere.com");
-    wait.until(ExpectedConditions.visibilityOf(tempCont));
-    temp = this.getTempValue();
-    while (temp >= 19) {
-      driver.get("https://weathershopper.pythonanywhere.com");
-      wait.until(ExpectedConditions.visibilityOf(tempCont));
-      temp = this.getTempValue();
-    }
-  }
-
-  /**
-  * Load homepage repeatedly until displayed temperature 
-  * is higher than 34 degrees
-  */
-  public void loadPageWithTempHigher34() {
-    Integer temp;
-    driver.get("https://weathershopper.pythonanywhere.com");
-    wait.until(ExpectedConditions.visibilityOf(tempCont));
-    temp = this.getTempValue();
-    while (temp <= 34) {
-      driver.get("https://weathershopper.pythonanywhere.com");
-      wait.until(ExpectedConditions.visibilityOf(tempCont));
-      temp = this.getTempValue();
-    }
-  }
-
-  /**
   * Click button 'Buy Moisturizers'
   */
   public void clickMoistButton() {
     moistButton.click();
+    this.waitForPagetoLoad();
   }
 
   /**
@@ -92,6 +62,7 @@ public class HomePage extends BasePage {
   */
   public void clickSunButton() {
     sunButton.click();
+    this.waitForPagetoLoad();
   }
 
 }
