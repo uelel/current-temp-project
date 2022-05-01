@@ -20,10 +20,9 @@ POM objects were created in `pageObject` folder that handle element recognition,
 
 1. Install Docker and Maven on host machine.
 
-2. Pull and run Selenium Docker container:  
+2. Pull and run Selenium Grid Hub & Nodes containers:  
 ```
-docker pull selenium/standalone-chrome:4.1.3-20220405  
-docker run -d -p 4444:4444 -p 7900:7900 --shm-size=2g selenium/standalone-chrome:4.1.3-20220405
+docker-compose up
 ```
 
 Testrun can be inspected in `http://localhost:7900` (password=secret). See [docker-selenium](https://github.com/SeleniumHQ/docker-selenium) for more info.

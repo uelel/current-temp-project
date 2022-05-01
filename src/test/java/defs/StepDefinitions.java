@@ -22,6 +22,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class StepDefinitions {
 
@@ -36,11 +37,22 @@ public class StepDefinitions {
   @Before
   public void setup() {
     prop.loadFromFile("/src/test/resources/test.properties");
-    ChromeOptions options = new ChromeOptions();
-    options.setHeadless(false);
+    DesiredCapabilities dcap = new DesiredCapabilities();
+    dcap.setCapability("headless", false);
+    switch(prop.get("browser")) {
+      case "chrome":
+        dcap.setCapability("browserName", "chrome");
+        break;
+      case "firefox":
+        dcap.setCapability("browserName", "firefox");
+        break;
+      case "edge":
+        dcap.setCapability("browserName", "MicrosoftEdge");
+        break;
+    }
     try {
       URL remoteURL = new URL(prop.get("webDriverURL"));
-      driver = new RemoteWebDriver(remoteURL, options);
+      driver = new RemoteWebDriver(remoteURL, dcap);
       //Thread.sleep(5000);
     } catch (Exception ex) {
       ex.printStackTrace();
