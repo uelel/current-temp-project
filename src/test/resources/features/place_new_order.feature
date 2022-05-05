@@ -1,5 +1,4 @@
 @automated
-
 Feature: Place a specific order for moisturizers or sunscreens based on current temperature.
 
    Shop for moisturizers if current temperature is lower than 19 degrees.

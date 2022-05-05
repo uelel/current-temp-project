@@ -4,10 +4,11 @@ import java.net.URL;
 import java.lang.Exception;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.JavascriptExecutor;
 
 public class BasePage {
@@ -28,6 +29,10 @@ public class BasePage {
     driver.get(url);
   }
 
+  public void initElements(Object inst) {
+    PageFactory.initElements(driver, inst);
+  }
+
   /**
   * Wait until visilibity of given web element
   * @param el
@@ -37,16 +42,28 @@ public class BasePage {
   }
 
   /**
+  * Wait until given web element is clickable
+  * @param el
+  */
+  public void waitUntilClickability(WebElement el) {
+    wait.until(ExpectedConditions.elementToBeClickable(el));
+  }
+
+  /**
   * Wait for document ready state
   */
   public void waitForPagetoLoad() {
+    String state = "";
     long millis = 500;
-    try { Thread.sleep(500); } catch (InterruptedException ex) { }
     do {
       try { Thread.sleep(500); } catch (InterruptedException ex) { }
       millis = millis + 500;
-    } while (!(((JavascriptExecutor) driver).executeScript("return document.readyState").toString()
-            .equals("complete")) && millis <= 10000);
+      try {
+        state = ((JavascriptExecutor) driver).executeScript("return document.readyState").toString();
+      } catch (NoSuchWindowException ex) {
+        state = "";
+      }
+    } while (!(state.equals("complete")) && millis <= 10000);
     //Reporter.log("Web page loading is complete in " + (millis / 1000) + "  Seconds");
   }
 

@@ -1,74 +1,62 @@
-package pageObject;
+package eshop.pages;
 
 import java.util.List;
 import java.util.ArrayList;
-import pageObject.BasePage;
+
+import net.thucydides.core.pages.PageObject;
+import net.thucydides.core.annotations.DefaultUrl;
+import net.serenitybdd.core.pages.WebElementFacade;
+import net.serenitybdd.core.annotations.findby.FindBy;
+
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.How;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.FindBys;
-import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
-public class CartPage extends BasePage {
+@DefaultUrl("/cart")
+public class CartPage extends PageObject {
 
-  WebDriver driver;
-  WebDriverWait wait;
+  @FindBy(css = "h2")
+  public WebElementFacade title;
 
-  @FindBy(how = How.CSS, using = "h2")
-  public WebElement title;
+  @FindBy(css = "table tbody tr")
+  public List<WebElementFacade> cartItemRows;
 
-  @FindBys({@FindBy(how = How.CSS, using = "table tbody tr")})
-  public List<WebElement> cartItemRows;
+  @FindBy(css = "#total")
+  public WebElementFacade totalPrice;
 
-  @FindBy(how = How.CSS, using = "#total")
-  public WebElement totalPrice;
+  @FindBy(css = "button.stripe-button-el")
+  public WebElementFacade stripeButton;
 
-  @FindBy(how = How.CSS, using = "button.stripe-button-el")
-  public WebElement stripeButton;
+  @FindBy(css = "iframe")
+  public WebElementFacade stripeIframe;
 
-  @FindBy(how = How.CSS, using = "iframe")
-  public WebElement stripeIframe;
+  @FindBy(css = "input#email")
+  public WebElementFacade emailField;
 
-  @FindBy(how = How.CSS, using = "input#email")
-  public WebElement emailField;
+  @FindBy(css = "input#card_number")
+  public WebElementFacade cardNumberField;
 
-  @FindBy(how = How.CSS, using = "input#card_number")
-  public WebElement cardNumberField;
+  @FindBy(css = "input#cc-exp")
+  public WebElementFacade cardExpField;
 
-  @FindBy(how = How.CSS, using = "input#cc-exp")
-  public WebElement cardExpField;
+  @FindBy(css = "input#cc-csc")
+  public WebElementFacade cardCvcField;
 
-  @FindBy(how = How.CSS, using = "input#cc-csc")
-  public WebElement cardCvcField;
+  @FindBy(css = "input#billing-zip")
+  public WebElementFacade zipField;
 
-  @FindBy(how = How.CSS, using = "input#billing-zip")
-  public WebElement zipField;
-
-  @FindBy(how = How.CSS, using = "button#submitButton")
-  public WebElement submitPaymentButton;
-
-  public CartPage(WebDriver driver) {
-    super(driver);
-    this.driver = driver;
-    wait = new WebDriverWait(driver, 10);
-    //Initialise Elements
-    PageFactory.initElements(driver, this);
-  }
+  @FindBy(css = "button#submitButton")
+  public WebElementFacade submitPaymentButton;
 
   /**
   * Get item name from given item row
   * @param itemRow
   * @return item name
   */
-  public String getItemName(WebElement itemRow) {
+  public String getItemName(WebElementFacade itemRow) {
     String name = "";
     try {
-      name = itemRow.findElement(By.cssSelector("td:nth-child(1)")).getText();
+      name = itemRow.then(By.cssSelector("td:nth-child(1)")).getText();
     } catch (NoSuchElementException ex) {
       ex.printStackTrace();
     }
@@ -80,14 +68,14 @@ public class CartPage extends BasePage {
   * @param itemRow
   * @return item price
   */
-  public String getItemPrice(WebElement itemRow) {
+  public Integer getItemPrice(WebElementFacade itemRow) {
     String price = "";
     try {
-      price = itemRow.findElement(By.cssSelector("td:nth-child(2)")).getText();
+      price = itemRow.then(By.cssSelector("td:nth-child(2)")).getText();
     } catch (NoSuchElementException ex) {
       ex.printStackTrace();
     }
-    return price;
+    return Integer.parseInt(price);
   }
 
   /**
@@ -103,9 +91,9 @@ public class CartPage extends BasePage {
   */
   public void openPaymentForm() {
     stripeButton.click();
-    this.waitForPagetoLoad();
+    //this.waitForPagetoLoad();
     // Switch to stripe iframe
-    driver.switchTo().frame(stripeIframe);
+    getDriver().switchTo().frame(stripeIframe);
   }
 
   /**
@@ -115,7 +103,6 @@ public class CartPage extends BasePage {
     try {
       emailField.sendKeys(text);
     } catch (NoSuchElementException ex) {
-      this.print(ex);
       ex.printStackTrace();
     }
   }
@@ -175,8 +162,9 @@ public class CartPage extends BasePage {
   */
   public void submitPaymentForm() {
     submitPaymentButton.click();
-    wait.until(ExpectedConditions.urlContains("/confirmation"));
-    this.waitForPagetoLoad();
+    waitFor(ExpectedConditions.urlContains("/confirmation"));
+    getDriver().switchTo().defaultContent();
+    //this.waitForPagetoLoad();
   }
 
 }

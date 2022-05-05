@@ -11,35 +11,41 @@ services:
   chrome:
     image: selenium/node-chrome:4.1.4-20220427
     shm_size: 2gb
+    mem_limit: 1500mb
     depends_on:
       - selenium-hub
     environment:
       - SE_EVENT_BUS_HOST=selenium-hub
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_GRID_URL=http://localhost:4444
     ports:
       - "7900:7900"
 
   firefox:
     image: selenium/node-firefox:4.1.4-20220427
     shm_size: 2gb
+    mem_limit: 1500mb
     depends_on:
       - selenium-hub
     environment:
       - SE_EVENT_BUS_HOST=selenium-hub
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_GRID_URL=http://localhost:4444
     ports:
       - "7901:7900"
 
   edge:
     image: selenium/node-edge:4.1.4-20220427
     shm_size: 2gb
+    mem_limit: 1500mb
     depends_on:
       - selenium-hub
     environment:
       - SE_EVENT_BUS_HOST=selenium-hub
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_GRID_URL=http://localhost:4444
     ports:
       - "7902:7900"

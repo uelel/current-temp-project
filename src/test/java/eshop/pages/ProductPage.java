@@ -1,19 +1,18 @@
-package pageObject;
+package eshop.pages;
 
 import java.util.List;
 import java.util.ArrayList;
-import pageObject.BasePage;
+
+import net.thucydides.core.pages.PageObject;
+import net.thucydides.core.annotations.DefaultUrl;
+import net.serenitybdd.core.pages.WebElementFacade;
+import net.serenitybdd.core.annotations.findby.FindBy;
+
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.How;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.FindBys;
-import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.NoSuchElementException;
 
-public class ProductPage extends BasePage {
+//@DefaultUrl("")
+public class ProductPage extends PageObject {
 
   /**
   * Define custom Product class that contains important product attributes
@@ -23,11 +22,11 @@ public class ProductPage extends BasePage {
   */
   public class Product {
 
-    WebElement element;
+    WebElementFacade element;
     String name;
     Integer price;
 
-    public Product (WebElement el, 
+    public Product (WebElementFacade el, 
                     String name,
                     Integer price) {
       this.element = el;
@@ -35,7 +34,7 @@ public class ProductPage extends BasePage {
       this.price = price;
     }
 
-    public WebElement getEl() {
+    public WebElementFacade getEl() {
       return element;
     }
     public String getName() {
@@ -45,7 +44,7 @@ public class ProductPage extends BasePage {
       return price;
     }
 
-    public void setEl(WebElement el) {
+    public void setEl(WebElementFacade el) {
       this.element = el;
     }
     public void setName(String name) {
@@ -56,29 +55,24 @@ public class ProductPage extends BasePage {
     }
 
   }
-
-  WebDriver driver;
-  WebDriverWait wait;
   
   public List<Product> productArray = new ArrayList<>();
 
-  @FindBy(how = How.CSS, using = "h2")
-  public WebElement title;
+  @FindBy(css = "h2")
+  public WebElementFacade title;
 
-  @FindBys({@FindBy(how = How.CSS, using = ".container .top-space-50 div")})
-  public List<WebElement> productContArray;
+  @FindBy(css = ".container .top-space-50 div")
+  public List<WebElementFacade> productContArray;
 
-  @FindBy(how = How.CSS, using = "button[onclick='goToCart()']")
-  public WebElement cartButton;
+  @FindBy(css = "button[onclick='goToCart()']")
+  public WebElementFacade cartButton;
 
-  public ProductPage(WebDriver driver) {
-    super(driver);
-    this.driver = driver;
-    wait = new WebDriverWait(driver, 10);
-    //Initialise Elements
-    PageFactory.initElements(driver, this);
-    // Fill productArray with Product objects
-    for (WebElement cont:productContArray) {
+  /**
+  * Load all products on page
+  * Save details into array of Product objects
+  */
+  public void loadProducts() {
+    for (WebElementFacade cont:productContArray) {
       productArray.add(new Product(
         cont,
         this.getProductName(cont),
@@ -91,7 +85,7 @@ public class ProductPage extends BasePage {
   * Get title text
   */
   public String getTitle() {
-    return this.title.getText();
+    return title.getText();
   }
 
   /**
@@ -99,10 +93,10 @@ public class ProductPage extends BasePage {
   * @param productCont
   * @return product name
   */
-  public String getProductName(WebElement productCont) {
+  public String getProductName(WebElementFacade productCont) {
     String name = "";
     try {
-      name = productCont.findElement(By.cssSelector("p.font-weight-bold")).getText();
+      name = productCont.then(By.cssSelector("p.font-weight-bold")).getText();
     } catch (NoSuchElementException ex) {
       ex.printStackTrace();
     }
@@ -114,11 +108,11 @@ public class ProductPage extends BasePage {
   * @param productCont
   * @return product price
   */
-  public Integer getProductPrice(WebElement productCont) {
+  public Integer getProductPrice(WebElementFacade productCont) {
     String priceText = "";
     Integer price = 0;
     try {
-      priceText = productCont.findElement(By.cssSelector("p:not([class])")).getText();
+      priceText = productCont.then(By.cssSelector("p:not([class])")).getText();
       priceText = priceText.replaceAll("[^0-9]", "");
       price = Integer.parseInt(priceText);
     } catch (NoSuchElementException ex) {
@@ -130,12 +124,12 @@ public class ProductPage extends BasePage {
   }
 
   /**
-  * Click of Buy button for given product
+  * Click on Buy button for given product
   * @param productCont - container of given product
   */
-  public void clickBuyButton(WebElement productCont) {
+  public void clickBuyButton(WebElementFacade productCont) {
     try {
-      productCont.findElement(By.cssSelector("button")).click();
+      productCont.then("button").click();
     } catch (NoSuchElementException ex) {
       ex.printStackTrace();
     }
@@ -146,7 +140,7 @@ public class ProductPage extends BasePage {
   */
   public void clickCartButton() {
     cartButton.click();
-    this.waitForPagetoLoad();
+    //this.waitForPagetoLoad();
   }
 
 }
