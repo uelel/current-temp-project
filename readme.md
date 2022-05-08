@@ -1,31 +1,41 @@
 # Current Temperature Test Automation project
 
-This Selenium/Cucumber project was created based on a job interview task.  
+This Selenium/Serenity/Cucumber test-automation project was created as a demonstration of Serenity capabilitites to automate end-to-end website tests.  
 
 ## Description
 
 The task was to automate end-to-end testcase on [e-commerce website](https://weathershopper.pythonanywhere.com).  
 
-`Selenium` & `Cucumber` test environment was created inside `Maven` project.
+`Serenity` environment was created implementing `Cucumber` BDD test structure.
 
-The BDD testcase was defined in `.feature` file. I tried to confirm with the requirement of single E2E testcase. Test data was defined in `.properties` file.  
+Testcase business logic was defined in `.feature` file. I tried to confirm with the requirement of single E2E testcase.
 
-The testcase logic was implemented in `StepDefinitions.java` file as `Gherkin` syntax is not complex enough.  
+Testcase was fully defined and implemented in `NewOrderDefinitions.java` step file as `Gherkin` syntax is not complex enough to handle technical details.  
 
-POM objects were created in `pageObject` folder that handle element recognition, page interactions and other operations specific to each webpage.  
+Page objects were created in `pages` folder that handle element recognition, page interactions and other operations specific to each webpage.  
 
-`Selenium RemoteWebDriver` is used to run the test inside Docker container (see installation). The only requirement that wasn't met was the support of different browsers - test is currently running only in `Chrome` browser. However, I can imagine the solution with the help of `docker-compose` and several Docker containers.    
+Soft assertion library `assertj` was used to ensure that all test steps are executed regardless of any failures. However, in this case it is not possible to bind failures to correct steps and all failures are shown within the step with `softAssert.assertAll()` call.
+
+Tests were run via `Selenium Grid` server to optional browser and OS environments. Selenium Grid was started as `Docker` containers.  
 
 ## Installation
 
-1. Install Docker and Maven on host machine.
+1. Install Docker, Docker Compose, Maven on the host machine.
 
 2. Pull and run Selenium Grid Hub & Nodes containers:  
+
 ```
 docker-compose up
 ```
 
-Testrun can be inspected in `http://localhost:7900` (password=secret). See [docker-selenium](https://github.com/SeleniumHQ/docker-selenium) for more info.
+Testrun can be inspected via ports `7900,7901,7902`. See `docker-compose.yml` and [docker-selenium](https://github.com/SeleniumHQ/docker-selenium) for more info.
 
 3. Clone this repo  
-4. `mvn clean test`
+
+4. Run tests
+
+```
+mvn clean verify -Dwebdriver.remote.driver=chrome
+mvn clean verify -Dwebdriver.remote.driver=firefox
+mvn clean verify -Dwebdriver.remote.driver=edge
+```

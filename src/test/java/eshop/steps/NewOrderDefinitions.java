@@ -6,7 +6,6 @@ import eshop.pages.ProductPage.Product;
 import eshop.pages.CartPage;
 import eshop.pages.ConfirmPage;
 
-import java.net.URL;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -58,10 +57,14 @@ public class NewOrderDefinitions {
   @Then("Correct category page is displayed")
   public void MoistPageDisplayed() {
     if (Serenity.sessionVariableCalled("shopFor") == "M") {
-      softAssert.assertThat(product.getTitle()).isEqualTo("Moisturizers");
+      softAssert.assertThat(product.getTitle())
+                .as("Correct category page is displayed")
+                .isEqualTo("Moisturizers");
     }
     if (Serenity.sessionVariableCalled("shopFor") == "S") {
-      softAssert.assertThat(product.getTitle()).isEqualTo("Sunscreens");
+      softAssert.assertThat(product.getTitle())
+                .as("Correct category page is displayed")
+                .isEqualTo("Sunscreens");
     }
   }
 
@@ -139,18 +142,23 @@ public class NewOrderDefinitions {
   public void itemsDisplayedInCart() {
     // check first item
     softAssert.assertThat(cart.getItemName(cart.cartItemRows.get(0)))
+              .as("Items are displayed in cart")
               .isEqualTo(Serenity.sessionVariableCalled("firstProductName"));
     softAssert.assertThat(cart.getItemPrice(cart.cartItemRows.get(0)))
+              .as("Items are displayed in cart")
               .isEqualTo(Serenity.sessionVariableCalled("firstProductPrice"));
     // check second item
     softAssert.assertThat(cart.getItemName(cart.cartItemRows.get(1)))
+              .as("Items are displayed in cart")
               .isEqualTo(Serenity.sessionVariableCalled("secondProductName"));
     softAssert.assertThat(cart.getItemPrice(cart.cartItemRows.get(1)))
+              .as("Items are displayed in cart")
               .isEqualTo(Serenity.sessionVariableCalled("secondProductPrice"));
     // check total price
     Integer sum = (Integer)Serenity.sessionVariableCalled("firstProductPrice") + 
                   (Integer)Serenity.sessionVariableCalled("secondProductPrice");
     softAssert.assertThat(cart.getTotalPriceText())
+              .as("Items are displayed in cart")
               .isEqualTo("Total: Rupees "+sum.toString());
   }
 
@@ -171,10 +179,15 @@ public class NewOrderDefinitions {
 
   @Then("Payment was successful")
   public void paymentSuccessful() {
+    //System.out.println("confirm.title = "+confirm.getTitle());
     softAssert.assertThat(confirm.getTitle())
+              .as("Payment was successful")
               .isEqualTo("PAYMENT SUCCESS");
+    //System.out.println("confirm.text = "+confirm.getText());
     softAssert.assertThat(confirm.getText())
+              .as("Payment was successful")
               .isEqualTo("Your payment was successful. You should receive a follow-up call from our sales team.");
+    softAssert.assertAll();
   }
   
 }
